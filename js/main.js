@@ -5,21 +5,17 @@ map.classList.remove('map--faded');
 
 var mocks = [];
 var mocksAmount = 8;
-var avatarCount = 0;
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 var getRandomIndex = function (arr) {
-  return Math.floor(Math.random() * (arr.length - 1 + 1))
+  return Math.floor(Math.random() * (arr.length - 1 + 1));
 };
 
 var exampleMock = {
-  author: {
-    avatar: 'img/avatars/user0' + avatarCount + '.png',
-  },
-
+  avatarCount: 0,
   offer: {
     title: 'some title',
     address: '600, 350',
@@ -36,54 +32,52 @@ var exampleMock = {
   location: {
     x: getRandom(0, 1150),
     y: getRandom(130, 630)
+  },
+
+  getMockAvatar: function () {
+    return {
+      avatar: 'img/avatars/user0' + ++this.avatarCount + '.png'
+    };
+  },
+
+  getMockOffer: function () {
+    return {
+      title: this.title,
+      address: this.address,
+      price: this.price
+      // photos: this.photos.getRandom(0, 2)
+    };
+  },
+
+  getMockLocation: function () {
+    return {
+      x: getRandom(0, 1150),
+      y: getRandom(130, 630)
+    };
+  },
+
+  getMock: function () {
+    return {
+      author: this.getMockAvatar(),
+      offer: this.getMockOffer(),
+      location: this.getMockLocation()
+    };
   }
 };
 
-//функция генератор нового Мока
-
-var getMock = function () {
-  var someObj = {};
-  someObj.author = {};
-  someObj.author.avatar = 'img/avatars/user0' + avatarCount++ + '.png';
-
-  someObj.offer = {};
-  someObj.offer.title = 'some title';
-  someObj.offer.address = '600, 350';
-  someObj.offer.price = 500;
-  someObj.offer.type = '';
-  someObj.offer.rooms = getRandom(1, 4);
-  someObj.offer.guests = getRandom(1, 4);
-  someObj.offer.checkin = '';
-  someObj.offer.checkout = '';
-  someObj.offer.features = '';
-  someObj.offer.description = '';
-  someObj.offer.photos = '';
-
-  someObj.location = {};
-  someObj.location.x = getRandom(0, 1150);
-  someObj.location.y = getRandom(130, 630);
-  return someObj;
-};
-
-console.log(getMock());
-
-//функция создания массива объектов
-
 var createMocks = function (arr) {
   for (var i = 0; i <= mocksAmount - 1; i++) {
-    var mock = getMock();
+    var mock = exampleMock.getMock();
     arr.push(mock);
   }
   return arr;
 };
 
-//записываем в массив результат выполнения функции
 mocks = createMocks(mocks);
 
 var mapPins = map.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-//функцися создания DOM-объекта
 var renderPin = function (mock) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style = 'left: ' + mock.location.x + 'px; top: ' + mock.location.y + 'px;';
@@ -92,7 +86,6 @@ var renderPin = function (mock) {
   return pinElement;
 };
 
-//создаем фрагмент
 var renderElements = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i <= mocks.length - 1; i++) {
