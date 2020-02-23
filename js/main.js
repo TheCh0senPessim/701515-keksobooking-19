@@ -10,10 +10,6 @@ var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var getRandomIndex = function (arr) {
-  return Math.floor(Math.random() * (arr.length - 1 + 1));
-};
-
 var exampleMock = {
   avatarCount: 0,
   offer: {
@@ -45,7 +41,6 @@ var exampleMock = {
       title: this.title,
       address: this.address,
       price: this.price
-      // photos: this.photos.getRandom(0, 2)
     };
   },
 
