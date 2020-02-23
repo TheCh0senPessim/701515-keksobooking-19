@@ -17,7 +17,7 @@ var getRandomIndex = function (arr) {
 
 var exampleMock = {
   author: {
-    avatar: 'img/avatars/user0' + avatarCount++ + '.png',
+    avatar: 'img/avatars/user0' + avatarCount + '.png',
   },
 
   offer: {
@@ -39,25 +39,39 @@ var exampleMock = {
   }
 };
 
-var getMock = function (exampleOBJ) {
+//функция генератор нового Мока
+
+var getMock = function () {
   var someObj = {};
-  someObj.author = exampleOBJ.author;
-  someObj.author.avatar = 'img/avatars/user0' + getRandom(1, 8) + '.png';
+  someObj.author = {};
+  someObj.author.avatar = 'img/avatars/user0' + avatarCount++ + '.png';
 
-  someObj.offer = exampleOBJ.offer;
+  someObj.offer = {};
+  someObj.offer.title = 'some title';
+  someObj.offer.address = '600, 350';
+  someObj.offer.price = 500;
+  someObj.offer.type = '';
+  someObj.offer.rooms = getRandom(1, 4);
+  someObj.offer.guests = getRandom(1, 4);
+  someObj.offer.checkin = '';
+  someObj.offer.checkout = '';
+  someObj.offer.features = '';
+  someObj.offer.description = '';
+  someObj.offer.photos = '';
 
-  someObj.location = exampleOBJ.location;
-  someObj.location.x = exampleOBJ.location.x;
-  someObj.location.y = exampleOBJ.location.y;
+  someObj.location = {};
+  someObj.location.x = getRandom(0, 1150);
+  someObj.location.y = getRandom(130, 630);
+  return someObj;
 };
 
-// console.log(getMock(exampleMock));
+console.log(getMock());
 
 //функция создания массива объектов
 
 var createMocks = function (arr) {
   for (var i = 0; i <= mocksAmount - 1; i++) {
-    var mock = getMock(exampleMock);
+    var mock = getMock();
     arr.push(mock);
   }
   return arr;
@@ -70,11 +84,11 @@ var mapPins = map.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 //функцися создания DOM-объекта
-var renderPin = function (element) {
+var renderPin = function (mock) {
   var pinElement = pinTemplate.cloneNode(true);
-  pinElement.style = 'left: ' + getRandom(0, 1150) + 'px; top: ' + getRandom(130, 630) + 'px;';
-  pinElement.querySelector('img').src = 'img/avatars/user0' + avatarCount++ + '.png';
-  pinElement.querySelector('img').alt = 'заголовок объявления';
+  pinElement.style = 'left: ' + mock.location.x + 'px; top: ' + mock.location.y + 'px;';
+  pinElement.querySelector('img').src = mock.author.avatar;
+  pinElement.querySelector('img').alt = mock.offer.title;
   return pinElement;
 };
 
