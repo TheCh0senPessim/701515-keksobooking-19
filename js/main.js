@@ -23,7 +23,15 @@ var getMockOffer = function () {
   return {
     title: 'some title',
     address: '600, 350',
-    price: getRandom(500, 5000)
+    price: getRandom(500, 5000),
+    type: ['palace', 'flat', 'house', 'bungalo'][getRandom(0, 3)],
+    rooms: getRandom(1, 4),
+    guests: getRandom(1, 4),
+    checkin: getRandom(12, 14) + ':00',
+    checkout: getRandom(12, 14) + ':00',
+    features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'].slice(0, getRandom(1, 5)),
+    description: 'some decription',
+    photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'].slice(0, getRandom(1, 2))
   };
 };
 
@@ -42,19 +50,6 @@ var getMock = function () {
   };
 };
 
-// var exampleMock = {
-//   offer: {
-//     type: ['palace', 'flat', 'house', 'bungalo'],
-//     rooms: [1, 2, 3, 4],
-//     guests: [1, 2, 3, 4],
-//     checkin: ['12:00', '13:00', '14:00'],
-//     checkout: ['12:00', '13:00', '14:00'],
-//     features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-//     description: 'some decription',
-//     photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'],
-//   }
-// };
-
 var createMocks = function () {
   var mocksArr = [];
   for (var i = 0; i <= mocksAmount - 1; i++) {
@@ -65,7 +60,6 @@ var createMocks = function () {
 };
 
 mocks = createMocks();
-// console.log(mocks);
 
 var renderPin = function (mock) {
   var pinElement = pinTemplate.cloneNode(true);
