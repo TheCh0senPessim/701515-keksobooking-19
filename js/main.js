@@ -92,15 +92,12 @@ var renderCard = function (mock) {
   cardElement.querySelector('.popup__description').textContent = mock.offer.description;
 
   var cardPhotos = cardElement.querySelector('.popup__photos');
-  // var fragmentPhoto = document.createDocumentFragment();
   for (var l = 0; l <= mock.offer.photos.length - 1; l++) {
     var cardPhoto = cardPhotos.children[0].cloneNode(true);
     cardPhoto.src = mock.offer.photos[l];
-    console.log(cardPhoto);
     cardPhotos.appendChild(cardPhoto);
   }
-  cardPhotos.children[0].src = mock.offer.photos[1];
-  console.log(cardPhotos.children);
+  cardPhotos.removeChild(cardPhotos.children[0]);
 
   cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
   return cardElement;
