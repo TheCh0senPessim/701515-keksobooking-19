@@ -8,6 +8,7 @@ var mocksAmount = 8;
 var avatarCount = 0;
 var mapPins = map.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -21,16 +22,16 @@ var getMockAvatar = function () {
 
 var getMockOffer = function () {
   return {
-    title: 'some title',
+    title: 'catchy title',
     address: '600, 350',
-    price: getRandom(500, 5000),
+    price: getRandom(500, 60000),
     type: ['palace', 'flat', 'house', 'bungalo'][getRandom(0, 3)],
-    rooms: getRandom(1, 4),
+    rooms: getRandom(1, 3),
     guests: getRandom(1, 4),
     checkin: getRandom(12, 14) + ':00',
     checkout: getRandom(12, 14) + ':00',
     features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'].slice(0, getRandom(1, 5)),
-    description: 'some decription',
+    description: 'awesome decription about this advert',
     photos: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'].slice(0, getRandom(1, 2))
   };
 };
@@ -69,6 +70,42 @@ var renderPin = function (mock) {
   return pinElement;
 };
 
+var renderCard = function (mock) {
+  var cardElement = cardTemplate.cloneNode(true);
+  var typeOfRoom = '';
+  cardElement.querySelector('.popup__title').textContent = mock.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = mock.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = mock.offer.price + '₽/ночь';
+  if (mock.offer.type === 'flat') {
+    typeOfRoom = 'Квартира';
+  } else if (mock.offer.type === 'bungalo') {
+    typeOfRoom = 'Бунгало';
+  } else if (mock.offer.type === 'house') {
+    typeOfRoom = 'Дом';
+  } else {
+    typeOfRoom = 'Дворец';
+  }
+  cardElement.querySelector('.popup__type').textContent = typeOfRoom;
+  cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
+  // cardElement.querySelector('.popup__features'). = mock.offer.features;
+  cardElement.querySelector('.popup__description').textContent = mock.offer.description;
+
+  var cardPhotos = cardElement.querySelector('.popup__photos');
+  // var fragmentPhoto = document.createDocumentFragment();
+  for (var l = 0; l <= mock.offer.photos.length - 1; l++) {
+    var cardPhoto = cardPhotos.children[0].cloneNode(true);
+    cardPhoto.src = mock.offer.photos[l];
+    console.log(cardPhoto);
+    cardPhotos.appendChild(cardPhoto);
+  }
+  cardPhotos.children[0].src = mock.offer.photos[1];
+  console.log(cardPhotos.children);
+
+  cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
+  return cardElement;
+};
+
 var renderElements = function () {
   var fragment = document.createDocumentFragment();
   for (var j = 0; j <= mocks.length - 1; j++) {
@@ -77,4 +114,13 @@ var renderElements = function () {
   mapPins.appendChild(fragment);
 };
 
+var renderCards = function () {
+  var fragmentCard = document.createDocumentFragment();
+  for (var k = 0; k <= mocks.length - 1; k++) {
+    fragmentCard.appendChild(renderCard(mocks[k]));
+  }
+  map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
+};
+
 renderElements();
+renderCards();
