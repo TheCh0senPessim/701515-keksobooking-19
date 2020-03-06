@@ -72,23 +72,51 @@ var renderPin = function (mock) {
 
 var renderCard = function (mock) {
   var cardElement = cardTemplate.cloneNode(true);
-  var typeOfRoom = '';
   cardElement.querySelector('.popup__title').textContent = mock.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = mock.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = mock.offer.price + '₽/ночь';
-  if (mock.offer.type === 'flat') {
-    typeOfRoom = 'Квартира';
-  } else if (mock.offer.type === 'bungalo') {
-    typeOfRoom = 'Бунгало';
-  } else if (mock.offer.type === 'house') {
-    typeOfRoom = 'Дом';
-  } else {
-    typeOfRoom = 'Дворец';
-  }
+
+  var roomTypesRu = {
+    flat: 'Квартира',
+    house: 'Дом',
+    bungalo: 'Бунгало',
+    palace: 'Дворец',
+  };
+  var typeOfRoom = roomTypesRu[mock.offer.type];
   cardElement.querySelector('.popup__type').textContent = typeOfRoom;
+
   cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
+
+  var featuresContainer = cardElement.querySelector('.popup__features');
+  var features = [].slice.call(featuresContainer.querySelectorAll('.popup__feature'));
+
+  features.forEach(function (elem) {
+    var feature = elem.classList[1].split('--')[1];
+
+    var isPresent = mock.offer.features.indexOf(feature) !== -1;
+
+    if (!isPresent) {
+      featuresContainer.removeChild(elem);
+    }
+  });
+
+  // var cardFeatures = cardElement.querySelector('.popup__features');
+  // var cardFeaturesColletction = cardElement.querySelectorAll('.popup__feature');
+  // console.log(cardFeaturesColletction)
+  // var feature = '';
+  // for (var m = 0; m <= mock.offer.features.length - 1; m++) {
+  //   feature = mock.offer.features[m];
+  // for (var n = 0; n <= cardFeaturesColletction.length - 1; n++) {
+  //   if (cardFeaturesColletction[n].indexOf(feature) > 0) {
+  //     console.log(cardFeaturesColletction[n]);
+  //   }
+  // }
+  // if () {}
+  // console.log(feature);
+  // }
   // cardElement.querySelector('.popup__features'). = mock.offer.features;
+
   cardElement.querySelector('.popup__description').textContent = mock.offer.description;
 
   var cardPhotos = cardElement.querySelector('.popup__photos');
