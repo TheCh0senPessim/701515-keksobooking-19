@@ -1,7 +1,8 @@
 'use strict';
+var ENTER_KEY = 'Enter';
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+// map.classList.remove('map--faded');
 
 var mocks = [];
 var mocksAmount = 8;
@@ -139,13 +140,40 @@ var renderElements = function () {
   mapPins.appendChild(fragment);
 };
 
-var renderCards = function () {
-  var fragmentCard = document.createDocumentFragment();
-  for (var k = 0; k <= mocks.length - 1; k++) {
-    fragmentCard.appendChild(renderCard(mocks[k]));
-  }
-  map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
+// var renderCards = function () {
+//   var fragmentCard = document.createDocumentFragment();
+//   for (var k = 0; k <= mocks.length - 1; k++) {
+//     fragmentCard.appendChild(renderCard(mocks[k]));
+//   }
+//   map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
+// };
+
+// renderElements();
+// renderCards();
+
+var mainPin = document.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+
+// var mapFilters = document.querySelector('.map__filters');
+var adressInput = adForm.querySelector('#address');
+adressInput.value = parseInt(mainPin.style.left, 10) + ', ' + parseInt(mainPin.style.top, 10);
+console.log(mainPin.style);
+
+var onMainPinClick = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  // mapFilters.classList.remove('')
+  renderElements();
 };
 
-renderElements();
-renderCards();
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    onMainPinClick();
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    onMainPinClick();
+  }
+});
