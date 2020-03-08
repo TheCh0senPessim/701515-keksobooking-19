@@ -153,6 +153,10 @@ var renderElements = function () {
 
 var mainPin = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
+var formControls = adForm.children;
+for (var o = 0; o <= formControls.length - 1; o++) {
+  formControls[o].disabled = true;
+}
 
 // var mapFilters = document.querySelector('.map__filters');
 var adressInput = adForm.querySelector('#address');
@@ -162,7 +166,10 @@ console.log(mainPin.style);
 var onMainPinClick = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  // mapFilters.classList.remove('')
+  var formControls = adForm.children;
+  for (var o = 0; o <= formControls.length - 1; o++) {
+  formControls[o].disabled = false;
+  }
   renderElements();
 };
 
