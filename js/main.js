@@ -1,6 +1,8 @@
 'use strict';
 var ENTER_KEY = 'Enter';
 
+var MAIN_PIN_WIDTH = 62;
+var MAIN_PIN_HEIGHT = 84;
 var map = document.querySelector('.map');
 // map.classList.remove('map--faded');
 
@@ -83,82 +85,74 @@ var renderCard = function (mock) {
     bungalo: 'Бунгало',
     palace: 'Дворец',
   };
-  var typeOfRoom = roomTypesRu[mock.offer.type];
-  cardElement.querySelector('.popup__type').textContent = typeOfRoom;
 
+  var typeOfRoom = roomTypesRu[mock.offer.type];
+
+  cardElement.querySelector('.popup__type').textContent = typeOfRoom;
   cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
-
-  var featuresContainer = cardElement.querySelector('.popup__features');
-  var features = [].slice.call(featuresContainer.querySelectorAll('.popup__feature'));
-
-  features.forEach(function (elem) {
-    var feature = elem.classList[1].split('--')[1];
-
-    var isPresent = mock.offer.features.indexOf(feature) !== -1;
-
-    if (!isPresent) {
-      featuresContainer.removeChild(elem);
+  var cardFeatures = cardElement.querySelector('.popup__features');
+  if (mock.offer.features.length === 0) {
+    cardElement.removeChild(cardFeatures);
+  } else {
+    var cardFeature = cardFeatures.querySelector('.popup__feature');
+    cardFeatures.innerHTML = '';
+    for (var i = 0; i <= mock.offer.features.length - 1; i++) {
+      var cardFeatureClone = cardFeature.cloneNode(true);
+      cardFeatureClone.classList = 'popup__feature';
+      cardFeatureClone.classList.add('popup__feature--' + mock.offer.features[i]);
+      cardFeatures.appendChild(cardFeatureClone);
     }
-  });
-
-  // var cardFeatures = cardElement.querySelector('.popup__features');
-  // var cardFeaturesColletction = cardElement.querySelectorAll('.popup__feature');
-  // console.log(cardFeaturesColletction)
-  // var feature = '';
-  // for (var m = 0; m <= mock.offer.features.length - 1; m++) {
-  //   feature = mock.offer.features[m];
-  // for (var n = 0; n <= cardFeaturesColletction.length - 1; n++) {
-  //   if (cardFeaturesColletction[n].indexOf(feature) > 0) {
-  //     console.log(cardFeaturesColletction[n]);
-  //   }
-  // }
-  // if () {}
-  // console.log(feature);
-  // }
-  // cardElement.querySelector('.popup__features'). = mock.offer.features;
-
-  cardElement.querySelector('.popup__description').textContent = mock.offer.description;
-
-  var cardPhotos = cardElement.querySelector('.popup__photos');
-  for (var l = 0; l <= mock.offer.photos.length - 1; l++) {
-    var cardPhoto = cardPhotos.children[0].cloneNode(true);
-    cardPhoto.src = mock.offer.photos[l];
-    cardPhotos.appendChild(cardPhoto);
   }
-  cardPhotos.removeChild(cardPhotos.children[0]);
-
+  cardElement.querySelector('.popup__description').textContent = mock.offer.description;
+  var cardPhotos = cardElement.querySelector('.popup__photos');
+  if (mock.offer.photos.length === 0) {
+    cardElement.removeChild(cardPhotos);
+  } else {
+    var cardPhoto = cardPhotos.querySelector('img');
+    cardPhotos.innerHTML = '';
+    for (var j = 0; j <= mock.offer.photos.length - 1; j++) {
+      var cardPhotoClone = cardPhoto.cloneNode(true);
+      cardPhotoClone.src = mock.offer.photos[j];
+      cardPhotos.appendChild(cardPhotoClone);
+    }
+  }
   cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
   return cardElement;
 };
 
 var renderElements = function () {
   var fragment = document.createDocumentFragment();
-  for (var j = 0; j <= mocks.length - 1; j++) {
-    fragment.appendChild(renderPin(mocks[j]));
+  for (var i = 0; i <= mocks.length - 1; i++) {
+    fragment.appendChild(renderPin(mocks[i]));
   }
   mapPins.appendChild(fragment);
 };
 
-// var renderCards = function () {
-//   var fragmentCard = document.createDocumentFragment();
-//   for (var k = 0; k <= mocks.length - 1; k++) {
-//     fragmentCard.appendChild(renderCard(mocks[k]));
-//   }
-//   map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
-// };
+var renderCards = function () {
+  var fragmentCard = document.createDocumentFragment();
+  for (var i = 0; i <= mocks.length - 1; i++) {
+    fragmentCard.appendChild(renderCard(mocks[i]));
+  }
+  map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
+};
 
 // renderElements();
-// renderCards();
+renderCards();
 
 var mainPin = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var formControls = adForm.children;
-for (var o = 0; o <= formControls.length - 1; o++) {
-  formControls[o].disabled = true;
+for (var i = 0; i <= formControls.length - 1; i++) {
+  formControls[i].disabled = true;
 }
 
-// var mapFilters = document.querySelector('.map__filters');
+var mapFilters = document.querySelector('.map__filters');
+var mapFiltersControls = mapFilters.children;
+for (var i = 0; i <= mapFiltersControls.length - 1; i++) {
+  mapFiltersControls[i].disabled = true;
+}
+
 var adressInput = adForm.querySelector('#address');
 adressInput.value = parseInt(mainPin.style.left, 10) + ', ' + parseInt(mainPin.style.top, 10);
 console.log(mainPin.style);
@@ -167,8 +161,8 @@ var onMainPinClick = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   var formControls = adForm.children;
-  for (var o = 0; o <= formControls.length - 1; o++) {
-  formControls[o].disabled = false;
+  for (var i = 0; i <= formControls.length - 1; i++) {
+    formControls[i].disabled = false;
   }
   renderElements();
 };
