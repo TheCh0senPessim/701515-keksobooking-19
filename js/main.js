@@ -1,6 +1,5 @@
 'use strict';
 var ENTER_KEY = 'Enter';
-
 var MAIN_PIN_WIDTH = 62;
 var MAIN_PIN_HEIGHT = 84;
 
@@ -139,30 +138,21 @@ var renderElements = function () {
 // Вернуться к карточкам во второй части задания
 // renderCards();
 
-var adForm = document.querySelector('.ad-form');
-
 // Пробую описать изменение одной функцией:
-// var changeAvailability = function (elements, isEnable) {
-//   console.log(isEnable);
-//   for (var i = 0; i <= elements.length; i++) {
-//     console.log(elements[i]);
-//     elements[i].disabled = isEnable;
-//   }
-// };
-// Но не работает
-// changeAvailability(mapFiltersControls, true);
-// changeAvailability(adForm.children, false);
+var changeAvailability = function (elements, isEnable) {
+  for (var i = 0; i <= elements.length - 1; i++) {
+    elements[i].disabled = isEnable;
+  }
+};
 
+var adForm = document.querySelector('.ad-form');
 var formControls = adForm.children;
-for (var i = 0; i <= formControls.length - 1; i++) {
-  formControls[i].disabled = true;
-}
 
 var mapFilters = document.querySelector('.map__filters');
 var mapFiltersControls = mapFilters.children;
-for (var i = 0; i <= mapFiltersControls.length - 1; i++) {
-  mapFiltersControls[i].disabled = true;
-}
+
+changeAvailability(formControls, true);
+changeAvailability(mapFiltersControls, true);
 
 var mainPin = document.querySelector('.map__pin--main');
 var adressInput = adForm.querySelector('#address');
@@ -173,17 +163,19 @@ var getMainPinPosition = function () {
   adressInput.value = mainX + ', ' + mainY;
 };
 
-getMainPinPosition();
+var getMainPinStartPosition = function () {
+  var mainXStart = Math.round(parseInt(mainPin.style.left, 10) + 32.5);
+  var mainYStart = Math.round(parseInt(mainPin.style.top, 10) + 32.5);
+  adressInput.value = mainXStart + ', ' + mainYStart;
+};
+
+getMainPinStartPosition()
 
 var onMainPinClick = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  for (var i = 0; i <= formControls.length - 1; i++) {
-    formControls[i].disabled = false;
-  }
-  for (var j = 0; j <= mapFiltersControls.length - 1; j++) {
-    mapFiltersControls[j].disabled = false;
-  }
+  changeAvailability(formControls, false);
+  changeAvailability(mapFiltersControls, false);
   renderElements();
 };
 
@@ -212,18 +204,21 @@ mainPin.addEventListener('mousedown', function (evt) {
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
+      getMainPinPosition();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-    getMainPinPosition();
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
     onMainPinClick();
+    getMainPinPosition();
   }
 });
+
+// Добавить валидацию формы:
