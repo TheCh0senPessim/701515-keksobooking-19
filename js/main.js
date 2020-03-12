@@ -1,14 +1,15 @@
 'use strict';
+var ENTER_KEY = 'Enter';
+var MAIN_PIN_WIDTH = 62;
+var MAIN_PIN_HEIGHT = 84;
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
 var mocks = [];
 var mocksAmount = 8;
 var avatarCount = 0;
 var mapPins = map.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+// var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -70,82 +71,185 @@ var renderPin = function (mock) {
   return pinElement;
 };
 
-var renderCard = function (mock) {
-  var cardElement = cardTemplate.cloneNode(true);
-  cardElement.querySelector('.popup__title').textContent = mock.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = mock.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = mock.offer.price + '₽/ночь';
+// var renderCard = function (mock) {
+//   var cardElement = cardTemplate.cloneNode(true);
+//   cardElement.querySelector('.popup__title').textContent = mock.offer.title;
+//   cardElement.querySelector('.popup__text--address').textContent = mock.offer.address;
+//   cardElement.querySelector('.popup__text--price').textContent = mock.offer.price + '₽/ночь';
 
-  var roomTypesRu = {
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало',
-    palace: 'Дворец',
-  };
-  var typeOfRoom = roomTypesRu[mock.offer.type];
-  cardElement.querySelector('.popup__type').textContent = typeOfRoom;
+//   var roomTypesRu = {
+//     flat: 'Квартира',
+//     house: 'Дом',
+//     bungalo: 'Бунгало',
+//     palace: 'Дворец',
+//   };
 
-  cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
+//   var typeOfRoom = roomTypesRu[mock.offer.type];
 
-  var featuresContainer = cardElement.querySelector('.popup__features');
-  var features = [].slice.call(featuresContainer.querySelectorAll('.popup__feature'));
-
-  features.forEach(function (elem) {
-    var feature = elem.classList[1].split('--')[1];
-
-    var isPresent = mock.offer.features.indexOf(feature) !== -1;
-
-    if (!isPresent) {
-      featuresContainer.removeChild(elem);
-    }
-  });
-
-  // var cardFeatures = cardElement.querySelector('.popup__features');
-  // var cardFeaturesColletction = cardElement.querySelectorAll('.popup__feature');
-  // console.log(cardFeaturesColletction)
-  // var feature = '';
-  // for (var m = 0; m <= mock.offer.features.length - 1; m++) {
-  //   feature = mock.offer.features[m];
-  // for (var n = 0; n <= cardFeaturesColletction.length - 1; n++) {
-  //   if (cardFeaturesColletction[n].indexOf(feature) > 0) {
-  //     console.log(cardFeaturesColletction[n]);
-  //   }
-  // }
-  // if () {}
-  // console.log(feature);
-  // }
-  // cardElement.querySelector('.popup__features'). = mock.offer.features;
-
-  cardElement.querySelector('.popup__description').textContent = mock.offer.description;
-
-  var cardPhotos = cardElement.querySelector('.popup__photos');
-  for (var l = 0; l <= mock.offer.photos.length - 1; l++) {
-    var cardPhoto = cardPhotos.children[0].cloneNode(true);
-    cardPhoto.src = mock.offer.photos[l];
-    cardPhotos.appendChild(cardPhoto);
-  }
-  cardPhotos.removeChild(cardPhotos.children[0]);
-
-  cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
-  return cardElement;
-};
+//   cardElement.querySelector('.popup__type').textContent = typeOfRoom;
+//   cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
+//   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
+//   var cardFeatures = cardElement.querySelector('.popup__features');
+//   if (mock.offer.features.length === 0) {
+//     cardElement.removeChild(cardFeatures);
+//   } else {
+//     var cardFeature = cardFeatures.querySelector('.popup__feature');
+//     cardFeatures.innerHTML = '';
+//     for (var i = 0; i <= mock.offer.features.length - 1; i++) {
+//       var cardFeatureClone = cardFeature.cloneNode(true);
+//       cardFeatureClone.classList = 'popup__feature';
+//       cardFeatureClone.classList.add('popup__feature--' + mock.offer.features[i]);
+//       cardFeatures.appendChild(cardFeatureClone);
+//     }
+//   }
+//   cardElement.querySelector('.popup__description').textContent = mock.offer.description;
+//   var cardPhotos = cardElement.querySelector('.popup__photos');
+//   if (mock.offer.photos.length === 0) {
+//     cardElement.removeChild(cardPhotos);
+//   } else {
+//     var cardPhoto = cardPhotos.querySelector('img');
+//     cardPhotos.innerHTML = '';
+//     for (var j = 0; j <= mock.offer.photos.length - 1; j++) {
+//       var cardPhotoClone = cardPhoto.cloneNode(true);
+//       cardPhotoClone.src = mock.offer.photos[j];
+//       cardPhotos.appendChild(cardPhotoClone);
+//     }
+//   }
+//   cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
+//   return cardElement;
+// };
 
 var renderElements = function () {
   var fragment = document.createDocumentFragment();
-  for (var j = 0; j <= mocks.length - 1; j++) {
-    fragment.appendChild(renderPin(mocks[j]));
+  for (var i = 0; i <= mocks.length - 1; i++) {
+    fragment.appendChild(renderPin(mocks[i]));
   }
   mapPins.appendChild(fragment);
 };
 
-var renderCards = function () {
-  var fragmentCard = document.createDocumentFragment();
-  for (var k = 0; k <= mocks.length - 1; k++) {
-    fragmentCard.appendChild(renderCard(mocks[k]));
+// var renderCards = function () {
+//   var fragmentCard = document.createDocumentFragment();
+//   for (var i = 0; i <= mocks.length - 1; i++) {
+//     fragmentCard.appendChild(renderCard(mocks[i]));
+//   }
+//   map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
+// };
+
+// Вернуться к карточкам во второй части задания
+// renderCards();
+
+// Пробую описать изменение одной функцией:
+var changeAvailability = function (elements, isEnable) {
+  for (var i = 0; i <= elements.length - 1; i++) {
+    elements[i].disabled = isEnable;
   }
-  map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
 };
 
-renderElements();
-renderCards();
+var adForm = document.querySelector('.ad-form');
+var formControls = adForm.children;
+
+var mapFilters = document.querySelector('.map__filters');
+var mapFiltersControls = mapFilters.children;
+
+changeAvailability(formControls, true);
+changeAvailability(mapFiltersControls, true);
+
+var mainPin = document.querySelector('.map__pin--main');
+var adressInput = adForm.querySelector('#address');
+
+var getMainPinPosition = function () {
+  var mainX = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
+  var mainY = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT;
+  adressInput.value = mainX + ', ' + mainY;
+};
+
+var getMainPinStartPosition = function () {
+  var mainXStart = Math.round(parseInt(mainPin.style.left, 10) + 32.5);
+  var mainYStart = Math.round(parseInt(mainPin.style.top, 10) + 32.5);
+  adressInput.value = mainXStart + ', ' + mainYStart;
+};
+
+getMainPinStartPosition();
+
+var onMainPinClick = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  changeAvailability(formControls, false);
+  changeAvailability(mapFiltersControls, false);
+  renderElements();
+};
+
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    onMainPinClick();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      getMainPinPosition();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    onMainPinClick();
+    getMainPinPosition();
+  }
+});
+
+// Валидация вместимости:
+var rooms = adForm.querySelector('#room_number');
+var capacity = adForm.querySelector('#capacity');
+
+var roomsAmount = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+
+var validateCapacity = function () {
+  var validCapacityOptions = roomsAmount[rooms.value];
+  var capacityOptions = capacity.querySelectorAll('option');
+  capacityOptions.forEach(function (currentOption) {
+    currentOption.selected = false;
+    currentOption.disabled = true;
+    var index = validCapacityOptions.indexOf(currentOption.value);
+    if (index >= 0) {
+      currentOption.disabled = false;
+      if (index === 0) {
+        currentOption.selected = true;
+      }
+    }
+  });
+};
+
+validateCapacity();
+
+rooms.addEventListener('change', function () {
+  validateCapacity();
+});
