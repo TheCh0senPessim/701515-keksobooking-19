@@ -9,7 +9,7 @@ var mocksAmount = 8;
 var avatarCount = 0;
 var mapPins = map.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+// var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -71,53 +71,53 @@ var renderPin = function (mock) {
   return pinElement;
 };
 
-var renderCard = function (mock) {
-  var cardElement = cardTemplate.cloneNode(true);
-  cardElement.querySelector('.popup__title').textContent = mock.offer.title;
-  cardElement.querySelector('.popup__text--address').textContent = mock.offer.address;
-  cardElement.querySelector('.popup__text--price').textContent = mock.offer.price + '₽/ночь';
+// var renderCard = function (mock) {
+//   var cardElement = cardTemplate.cloneNode(true);
+//   cardElement.querySelector('.popup__title').textContent = mock.offer.title;
+//   cardElement.querySelector('.popup__text--address').textContent = mock.offer.address;
+//   cardElement.querySelector('.popup__text--price').textContent = mock.offer.price + '₽/ночь';
 
-  var roomTypesRu = {
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало',
-    palace: 'Дворец',
-  };
+//   var roomTypesRu = {
+//     flat: 'Квартира',
+//     house: 'Дом',
+//     bungalo: 'Бунгало',
+//     palace: 'Дворец',
+//   };
 
-  var typeOfRoom = roomTypesRu[mock.offer.type];
+//   var typeOfRoom = roomTypesRu[mock.offer.type];
 
-  cardElement.querySelector('.popup__type').textContent = typeOfRoom;
-  cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
-  var cardFeatures = cardElement.querySelector('.popup__features');
-  if (mock.offer.features.length === 0) {
-    cardElement.removeChild(cardFeatures);
-  } else {
-    var cardFeature = cardFeatures.querySelector('.popup__feature');
-    cardFeatures.innerHTML = '';
-    for (var i = 0; i <= mock.offer.features.length - 1; i++) {
-      var cardFeatureClone = cardFeature.cloneNode(true);
-      cardFeatureClone.classList = 'popup__feature';
-      cardFeatureClone.classList.add('popup__feature--' + mock.offer.features[i]);
-      cardFeatures.appendChild(cardFeatureClone);
-    }
-  }
-  cardElement.querySelector('.popup__description').textContent = mock.offer.description;
-  var cardPhotos = cardElement.querySelector('.popup__photos');
-  if (mock.offer.photos.length === 0) {
-    cardElement.removeChild(cardPhotos);
-  } else {
-    var cardPhoto = cardPhotos.querySelector('img');
-    cardPhotos.innerHTML = '';
-    for (var j = 0; j <= mock.offer.photos.length - 1; j++) {
-      var cardPhotoClone = cardPhoto.cloneNode(true);
-      cardPhotoClone.src = mock.offer.photos[j];
-      cardPhotos.appendChild(cardPhotoClone);
-    }
-  }
-  cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
-  return cardElement;
-};
+//   cardElement.querySelector('.popup__type').textContent = typeOfRoom;
+//   cardElement.querySelector('.popup__text--capacity').textContent = mock.offer.rooms + ' комнаты для ' + mock.offer.guests + ' гостей';
+//   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + mock.offer.checkin + ', выезд до ' + mock.offer.checkout;
+//   var cardFeatures = cardElement.querySelector('.popup__features');
+//   if (mock.offer.features.length === 0) {
+//     cardElement.removeChild(cardFeatures);
+//   } else {
+//     var cardFeature = cardFeatures.querySelector('.popup__feature');
+//     cardFeatures.innerHTML = '';
+//     for (var i = 0; i <= mock.offer.features.length - 1; i++) {
+//       var cardFeatureClone = cardFeature.cloneNode(true);
+//       cardFeatureClone.classList = 'popup__feature';
+//       cardFeatureClone.classList.add('popup__feature--' + mock.offer.features[i]);
+//       cardFeatures.appendChild(cardFeatureClone);
+//     }
+//   }
+//   cardElement.querySelector('.popup__description').textContent = mock.offer.description;
+//   var cardPhotos = cardElement.querySelector('.popup__photos');
+//   if (mock.offer.photos.length === 0) {
+//     cardElement.removeChild(cardPhotos);
+//   } else {
+//     var cardPhoto = cardPhotos.querySelector('img');
+//     cardPhotos.innerHTML = '';
+//     for (var j = 0; j <= mock.offer.photos.length - 1; j++) {
+//       var cardPhotoClone = cardPhoto.cloneNode(true);
+//       cardPhotoClone.src = mock.offer.photos[j];
+//       cardPhotos.appendChild(cardPhotoClone);
+//     }
+//   }
+//   cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
+//   return cardElement;
+// };
 
 var renderElements = function () {
   var fragment = document.createDocumentFragment();
@@ -169,7 +169,7 @@ var getMainPinStartPosition = function () {
   adressInput.value = mainXStart + ', ' + mainYStart;
 };
 
-getMainPinStartPosition()
+getMainPinStartPosition();
 
 var onMainPinClick = function () {
   map.classList.remove('map--faded');
@@ -221,4 +221,35 @@ mainPin.addEventListener('keydown', function (evt) {
   }
 });
 
-// Добавить валидацию формы:
+// Валидация вместимости:
+var rooms = adForm.querySelector('#room_number');
+var capacity = adForm.querySelector('#capacity');
+
+var roomsAmount = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+
+var validateCapacity = function () {
+  var validCapacityOptions = roomsAmount[rooms.value];
+  var capacityOptions = capacity.querySelectorAll('option');
+  capacityOptions.forEach(function (currentOption) {
+    currentOption.selected = false;
+    currentOption.disabled = true;
+    var index = validCapacityOptions.indexOf(currentOption.value);
+    if (index >= 0) {
+      currentOption.disabled = false;
+      if (index === 0) {
+        currentOption.selected = true;
+      }
+    }
+  });
+};
+
+validateCapacity();
+
+rooms.addEventListener('change', function () {
+  validateCapacity();
+});
