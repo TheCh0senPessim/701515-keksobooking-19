@@ -64,17 +64,24 @@ var createMocks = function () {
 
 mocks = createMocks();
 
+var openCard = function (mock) {
+  closeCard();
+  map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
+};
+
 var renderPin = function (mock) {
   var pinElement = pinTemplate.cloneNode(true);
   pinElement.style = 'left: ' + mock.location.x + 'px; top: ' + mock.location.y + 'px;';
   pinElement.querySelector('img').src = mock.author.avatar;
   pinElement.querySelector('img').alt = mock.offer.title;
   pinElement.addEventListener('click', function () {
-    map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
+    openCard(mock);
+    // map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
   });
   pinElement.addEventListener('keydown', function (evt) {
     if (evt.key === ENTER_KEY) {
-      map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
+      openCard(mock);
+      // map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
     }
   });
   return pinElement;
@@ -276,4 +283,51 @@ validateCapacity();
 
 rooms.addEventListener('change', function () {
   validateCapacity();
+});
+
+// Валидация времени заезда-выезда
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
+
+var checkInsAndOuts = {
+  '12:00': ['12:00'],
+  '13:00': ['13:00'],
+  '14:00': ['14:00']
+};
+
+var validateСhekIn = function () {
+  var validCheckInTime = checkInsAndOuts[timeIn.value];
+  var validCheckOutTime = timeOut.querySelectorAll('option');
+  validCheckOutTime.forEach(function (currentTime) {
+    currentTime.disabled = true;
+    currentTime.selected = false;
+    var index = validCheckInTime.indexOf(currentTime.value);
+    if (index >= 0) {
+      currentTime.disabled = false;
+      if (index === 0) {
+        currentTime.selected = true;
+      }
+    }
+  });
+};
+
+validateСhekIn();
+
+timeIn.addEventListener('change', function () {
+  validateСhekIn();
+});
+
+// Валидация минимальной стоимости
+var selectOfRoom = adForm.querySelector('#type');
+var priceOfRoom = adForm.querySelector('#price');
+var minPriceOfRoom = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
+selectOfRoom.addEventListener('change', function () {
+  priceOfRoom.placeholder = minPriceOfRoom[selectOfRoom.value];
+  priceOfRoom.min = minPriceOfRoom[selectOfRoom.value];
 });
