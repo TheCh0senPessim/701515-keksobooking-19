@@ -76,12 +76,10 @@ var renderPin = function (mock) {
   pinElement.querySelector('img').alt = mock.offer.title;
   pinElement.addEventListener('click', function () {
     openCard(mock);
-    // map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
   });
   pinElement.addEventListener('keydown', function (evt) {
     if (evt.key === ENTER_KEY) {
       openCard(mock);
-      // map.insertBefore(renderCard(mock), map.querySelector('.map__filters-container'));
     }
   });
   return pinElement;
@@ -132,13 +130,6 @@ var renderCard = function (mock) {
     }
   }
   cardElement.querySelector('.popup__avatar').src = mock.author.avatar;
-
-  document.addEventListener('keydown', function (evt) {
-    var card = document.querySelector('.map__card');
-    if (evt.key === ESC_KEY && card) {
-      closeCard();
-    }
-  });
   cardElement.querySelector('.popup__close').addEventListener('click', function () {
     closeCard();
   });
@@ -153,6 +144,13 @@ var closeCard = function () {
   }
 };
 
+document.addEventListener('keydown', function (evt) {
+  var card = document.querySelector('.map__card');
+  if (evt.key === ESC_KEY && card) {
+    closeCard();
+  }
+});
+
 var renderElements = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i <= mocks.length - 1; i++) {
@@ -161,15 +159,6 @@ var renderElements = function () {
   mapPins.appendChild(fragment);
 };
 
-// var renderCards = function () {
-//   var fragmentCard = document.createDocumentFragment();
-//   for (var i = 0; i <= mocks.length - 1; i++) {
-//     fragmentCard.appendChild(renderCard(mocks[i]));
-//   }
-//   map.insertBefore(fragmentCard, map.querySelector('.map__filters-container'));
-// };
-
-// Пробую описать изменение одной функцией:
 var changeAvailability = function (elements, isEnable) {
   for (var i = 0; i <= elements.length - 1; i++) {
     elements[i].disabled = isEnable;
@@ -229,8 +218,26 @@ mainPin.addEventListener('mousedown', function (evt) {
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
+      //  Добавить проверку нахождения метки в карте
       mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+
+      var MAX_TOP = 130;
+      var MAX_BOTTOM = 620;
+      var MAX_RIGHT = 1160;
+      var MAX_LEFT = -30;
+      var GAP_FROM_MAX = 10;
+
+      if (mainPin.offsetTop <= MAX_TOP) {
+        mainPin.style.top = MAX_TOP + GAP_FROM_MAX + 'px';
+      } else if (mainPin.offsetTop >= MAX_BOTTOM) {
+        mainPin.style.top = MAX_BOTTOM - GAP_FROM_MAX + 'px';
+      }
+      if (mainPin.offsetLeft >= MAX_RIGHT) {
+        mainPin.style.left = MAX_RIGHT - GAP_FROM_MAX + 'px';
+      } else if (mainPin.offsetLeft <= MAX_LEFT) {
+        mainPin.style.left = MAX_LEFT + GAP_FROM_MAX + 'px';
+      }
     };
 
     var onMouseUp = function (upEvt) {
