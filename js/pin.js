@@ -12,9 +12,6 @@
       pinElement.addEventListener('click', function () {
         window.card.openCard(mock);
       });
-      pinElement.addEventListener('keydown', function (evt) {
-        window.util.isEnterEvent(evt, window.card.openCard(mock));
-      });
       return pinElement;
     }
   };

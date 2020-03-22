@@ -1,17 +1,13 @@
 'use strict';
 
 (function () {
-
+  var ENTER_KEY = 'Enter';
   var MAIN_PIN_WIDTH = 62;
   var MAIN_PIN_HEIGHT = 84;
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
   var adressInput = document.querySelector('#address');
-
-  // document.addEventListener('keydown', function (evt) {
-  //   window.util.isEscEvent(evt, closeCard);
-  // });
 
   var renderElements = function () {
     var fragment = document.createDocumentFragment();
@@ -33,15 +29,17 @@
     adressInput.value = mainXStart + ', ' + mainYStart;
   };
 
-  getMainPinStartPosition();
-
   var onMainPinClick = function () {
     map.classList.remove('map--faded');
     window.form.adForm.classList.remove('ad-form--disabled');
     window.form.changeAvailability(window.form.formControls, false);
     window.form.changeAvailability(window.form.mapFiltersControls, false);
-    renderElements();
+    if (mapPins.childElementCount <= 2) {
+      renderElements();
+    }
   };
+
+  getMainPinStartPosition();
 
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.button === 0) {
@@ -62,7 +60,6 @@
           x: moveEvt.clientX,
           y: moveEvt.clientY
         };
-        //  Добавить проверку нахождения метки в карте
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
@@ -97,11 +94,9 @@
   });
 
   mainPin.addEventListener('keydown', function (evt) {
-    window.util.isEnterEvent(evt, onMainPinClick, getMainPinPosition);
-  // if (evt.key === ENTER_KEY) {
-  //   onMainPinClick();
-  //   getMainPinPosition();
-  // }
+    if (evt.key === ENTER_KEY) {
+      onMainPinClick();
+      getMainPinPosition();
+    }
   });
-  window.map = {};
 })();
