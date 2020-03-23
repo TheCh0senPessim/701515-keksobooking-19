@@ -9,13 +9,44 @@
   var mapPins = document.querySelector('.map__pins');
   var adressInput = document.querySelector('#address');
 
-  var renderElements = function () {
+  var renderElements = function (addvert) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i <= window.data.mocks.length - 1; i++) {
-      fragment.appendChild(window.pin.renderNewElement(window.data.mocks[i]));
+    for (var i = 0; i <= 8; i++) {
+      // fragment.appendChild(window.pin.renderNewElement(window.data.mocks[i]));
+      fragment.appendChild(window.pin.renderNewElement(addvert[i]));
     }
     mapPins.appendChild(fragment);
   };
+
+  //
+  var successHandler = function (addvert) {
+    renderElements(addvert);
+    // var fragment = document.createDocumentFragment();
+
+    // for (var i = 0; i < 8; i++) {
+    //   // fragment.appendChild(renderWizard(addvert[i]));
+    //   fragment.appendChild(window.pin.renderNewElement(addvert[i]));
+    // }
+    // mapPins.appendChild(fragment);
+
+    // userDialog.querySelector('.setup-similar').classList.remove('hidden');
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  // window.backend.load(successHandler, errorHandler);
+
+  //
 
   var getMainPinPosition = function () {
     var mainX = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
@@ -34,9 +65,13 @@
     window.form.adForm.classList.remove('ad-form--disabled');
     window.form.changeAvailability(window.form.formControls, false);
     window.form.changeAvailability(window.form.mapFiltersControls, false);
+    // if (mapPins.childElementCount <= 2) {
+    //   renderElements();
+    // }
     if (mapPins.childElementCount <= 2) {
-      renderElements();
+      window.backend.load(successHandler, errorHandler);
     }
+
   };
 
   getMainPinStartPosition();
