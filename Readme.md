@@ -4,7 +4,7 @@
 * Наставник: [Евгений Щеколдин](https://up.htmlacademy.ru/javascript/19/user/861059).
 
 ---
-Опубликованная версия: https://htmlacademy-javascript.github.io/701515-keksobooking-19/6/
+Опубликованная версия: https://htmlacademy-javascript.github.io/701515-keksobooking-19/7/
 ---
 ---
 _Не удаляйте и не обращайте внимание на файлы:_<br>
